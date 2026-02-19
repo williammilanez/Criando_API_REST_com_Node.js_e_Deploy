@@ -13,4 +13,8 @@ routerTodo.post("/api/todos", (req, res) =>
   todoController.createTodo(req, res),
 );
 
+routerTodo.put("/api/todos/:id", (req, res) =>
+  todoController.updateTodo(req, res),
+);
+
 export default routerTodo;
