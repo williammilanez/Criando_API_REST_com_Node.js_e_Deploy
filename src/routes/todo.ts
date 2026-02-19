@@ -17,4 +17,8 @@ routerTodo.put("/api/todos/:id", (req, res) =>
   todoController.updateTodo(req, res),
 );
 
+routerTodo.delete("/api/todos/:id", (req, res) =>
+  todoController.deleteTodo(req, res),
+);
+
 export default routerTodo;

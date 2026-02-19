@@ -45,6 +45,7 @@ export class TodoController {
   async updateTodo(req: Request, res: Response) {
     try {
       const { id } = req.params;
+
       const { title, description, completed } = req.body;
 
       const todoExists = await prisma.todo.findUnique({
@@ -68,6 +69,29 @@ export class TodoController {
     } catch (error) {
       console.error("Erro ao atualizar a tarefa:", error);
       return res.status(500).json({ error: "Erro ao atualizar tarefa" });
+    }
+  }
+
+  async deleteTodo(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const todoExists = await prisma.todo.findUnique({
+        where: { id: Number(id) },
+      });
+
+      if (!todoExists) {
+        return res.status(404).json({ error: "Tarefa não encontrada" });
+      }
+
+      await prisma.todo.delete({
+        where: { id: Number(id) },
+      });
+
+      return res.status(204).send();
+    } catch (error) {
+      console.error("Erro ao deletar a tarefa:", error);
+      return res.status(500).json({ error: "Erro ao deletar a tarefa" });
     }
   }
 }
