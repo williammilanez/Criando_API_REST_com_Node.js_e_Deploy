@@ -16,7 +16,7 @@ export class TodoController {
       return res.status(200).json(todos);
     } catch (error) {
       console.error("Error fetching todos:", error);
-      return res.status(500).json({ error: "Erro ao listar tarefas" });
+      return res.status(500).json({ message: "Erro ao listar tarefas" });
     }
   }
 
@@ -25,7 +25,7 @@ export class TodoController {
       const { title, description } = req.body;
 
       if (!title) {
-        return res.status(400).json({ error: "O título é obrigatório" });
+        return res.status(400).json({ message: "O título é obrigatório" });
       }
 
       const todo = await prisma.todo.create({
@@ -38,7 +38,7 @@ export class TodoController {
       return res.status(201).json(todo);
     } catch (error) {
       console.error("Erro ao criar a tarefa:", error);
-      return res.status(500).json({ error: "Erro ao criar tarefa" });
+      return res.status(500).json({ message: "Erro ao criar tarefa" });
     }
   }
 
@@ -53,7 +53,7 @@ export class TodoController {
       });
 
       if (!todoExists) {
-        return res.status(404).json({ error: "Tarefa não encontrada" });
+        return res.status(404).json({ message: "Tarefa não encontrada" });
       }
 
       const updatedTodo = await prisma.todo.update({
@@ -68,7 +68,7 @@ export class TodoController {
       return res.status(200).json(updatedTodo);
     } catch (error) {
       console.error("Erro ao atualizar a tarefa:", error);
-      return res.status(500).json({ error: "Erro ao atualizar tarefa" });
+      return res.status(500).json({ message: "Erro ao atualizar tarefa" });
     }
   }
 
@@ -81,7 +81,7 @@ export class TodoController {
       });
 
       if (!todoExists) {
-        return res.status(404).json({ error: "Tarefa não encontrada" });
+        return res.status(404).json({ message: "Tarefa não encontrada" });
       }
 
       await prisma.todo.delete({
@@ -91,7 +91,26 @@ export class TodoController {
       return res.status(204).send();
     } catch (error) {
       console.error("Erro ao deletar a tarefa:", error);
-      return res.status(500).json({ error: "Erro ao deletar a tarefa" });
+      return res.status(500).json({ message: "Erro ao deletar a tarefa" });
+    }
+  }
+
+  async getTodoById(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const todo = await prisma.todo.findUnique({
+        where: { id: Number(id) },
+      });
+
+      if (!todo) {
+        return res.status(404).json({ message: "Tarefa não encontrada" });
+      }
+
+      return res.status(200).json(todo);
+    } catch (error) {
+      console.error("Erro ao buscar a tarefa:", error);
+      return res.status(500).json({ message: "Erro ao buscar a tarefa" });
     }
   }
 }
